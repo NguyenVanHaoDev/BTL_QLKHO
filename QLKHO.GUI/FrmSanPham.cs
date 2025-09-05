@@ -36,35 +36,9 @@ namespace QLKHO.GUI
             LoadDanhMuc();
             LoadDonViTinh();
             SetupFilterControls();
-            SetTrangThaiForm(false);
-            
-            // Debug: Kiểm tra data
-            DebugComboBoxData();
+            ClearForm(); // Sử dụng ClearForm thay vì SetTrangThaiForm(false)
         }
 
-        private void DebugComboBoxData()
-        {
-            System.Diagnostics.Debug.WriteLine($"Danh mục count: {cboDanhMuc.Items.Count}");
-            System.Diagnostics.Debug.WriteLine($"Đơn vị tính count: {cboDonViTinh.Items.Count}");
-            
-            if (cboDanhMuc.Items.Count > 0)
-            {
-                for (int i = 0; i < cboDanhMuc.Items.Count; i++)
-                {
-                    var item = cboDanhMuc.Items[i];
-                    System.Diagnostics.Debug.WriteLine($"Danh mục {i}: {item} (Type: {item?.GetType().Name})");
-                }
-            }
-            
-            if (cboDonViTinh.Items.Count > 0)
-            {
-                for (int i = 0; i < cboDonViTinh.Items.Count; i++)
-                {
-                    var item = cboDonViTinh.Items[i];
-                    System.Diagnostics.Debug.WriteLine($"Đơn vị tính {i}: {item} (Type: {item?.GetType().Name})");
-                }
-            }
-        }
 
         private void SetupForm()
         {
@@ -235,7 +209,7 @@ namespace QLKHO.GUI
             {
                 var selectedRow = dgvSanPham.SelectedRows[0];
                 LoadSanPhamToForm(selectedRow);
-                SetTrangThaiForm(true);
+                SetTrangThaiForm(true); // Enable controls để có thể edit
                 UpdateButtonStates();
             }
         }
@@ -324,7 +298,7 @@ namespace QLKHO.GUI
             cboDanhMuc.SelectedIndex = 0;
             cboDonViTinh.SelectedIndex = 0;
             chkTrangThai.Checked = true;
-            SetTrangThaiForm(false);
+            SetTrangThaiForm(true); // Enable controls để có thể thêm mới
             UpdateButtonStates();
         }
 
