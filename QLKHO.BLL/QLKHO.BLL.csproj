@@ -56,7 +56,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AuthenticationService.cs" />
+    <Compile Include="Services\DanhMucService.cs" />
     <Compile Include="Services\DonViTinhService.cs" />
+    <Compile Include="Services\LichSuService.cs" />
     <Compile Include="Services\NguoiDungService.cs" />
     <Compile Include="Services\SanPhamService.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

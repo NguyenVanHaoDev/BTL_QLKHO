@@ -30,5 +30,10 @@ namespace QLKHO.DAL.Models
 
         // Navigation properties
         public virtual ICollection<SanPham> SanPhams { get; set; } = new List<SanPham>();
+
+        public override string ToString()
+        {
+            return TenDVT;
+        }
     }
 }

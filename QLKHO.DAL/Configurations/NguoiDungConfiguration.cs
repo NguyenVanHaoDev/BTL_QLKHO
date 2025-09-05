@@ -49,12 +49,10 @@ namespace QLKHO.DAL.Configurations
                 .IsRequired();
 
             Property(nd => nd.NgayTao)
-                .IsRequired()
-                .HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed);
+                .IsRequired();
 
             Property(nd => nd.NgayCapNhat)
-                .IsRequired()
-                .HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Computed);
+                .IsRequired();
 
             // Relationships
             HasMany(nd => nd.DanhMucSanPhams)

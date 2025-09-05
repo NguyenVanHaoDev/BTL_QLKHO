@@ -49,8 +49,50 @@ namespace QLKHO.DAL.Repositories
 
         public virtual void Update(T entity)
         {
-            _dbSet.Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
+            try
+            {
+                var entry = _context.Entry(entity);
+                if (entry.State == EntityState.Detached)
+                {
+                    _dbSet.Attach(entity);
+                }
+                entry.State = EntityState.Modified;
+            }
+            catch (Exception ex)
+            {
+                // Nếu có lỗi với entity tracking, thử cách khác
+                try
+                {
+                    // Detach entity hiện tại nếu có
+                    var existingEntry = _context.Entry(entity);
+                    if (existingEntry.State != EntityState.Detached)
+                    {
+                        existingEntry.State = EntityState.Detached;
+                    }
+                    
+                    // Attach lại và set modified
+                    _dbSet.Attach(entity);
+                    _context.Entry(entity).State = EntityState.Modified;
+                }
+                catch
+                {
+                    // Nếu vẫn lỗi, throw exception gốc (giữ nguyên stack trace)
+                    throw;
+                }
+            }
+        }
+
+        public virtual void UpdateSafe(T entity)
+        {
+            // Cách tiếp cận an toàn hơn cho update
+            var entry = _context.Entry(entity);
+            if (entry.State == EntityState.Detached)
+            {
+                _dbSet.Attach(entity);
+            }
+            
+            // Chỉ đánh dấu entity là modified, không set state trực tiếp
+            entry.State = EntityState.Modified;
         }
 
         public virtual void Remove(T entity)

@@ -8,14 +8,14 @@ namespace QLKHO.DAL
     {
         public QuanLyKhoDbContext() : base("name=QuanLyKhoConnectionString")
         {
-            // Cấu hình Entity Framework
-            Configuration.LazyLoadingEnabled = true;
-            Configuration.ProxyCreationEnabled = true;
-            Configuration.AutoDetectChangesEnabled = true;
-            Configuration.ValidateOnSaveEnabled = true;
+            // Cấu hình Entity Framework - Tối ưu cho production
+            Configuration.LazyLoadingEnabled = false; // Tắt lazy loading để tăng performance
+            Configuration.ProxyCreationEnabled = false; // Tắt proxy creation để tránh serialization issues
+            Configuration.AutoDetectChangesEnabled = true; // Giữ để tự động detect changes
+            Configuration.ValidateOnSaveEnabled = true; // Giữ để validate trước khi save
             
-            // Cấu hình Database Initializer cho EF6
-            Database.SetInitializer<QuanLyKhoDbContext>(new QuanLyKhoDatabaseInitializer());
+            // Không set Database Initializer trong constructor
+            // Initializer sẽ được set trong DatabaseHelper khi cần thiết
         }
 
         // DbSets cho các bảng

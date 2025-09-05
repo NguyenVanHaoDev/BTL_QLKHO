@@ -41,5 +41,10 @@ namespace QLKHO.DAL.Models
         public virtual NguoiDung NguoiDung { get; set; }
 
         public virtual ICollection<SanPham> SanPhams { get; set; } = new List<SanPham>();
+
+        public override string ToString()
+        {
+            return TenDM;
+        }
     }
 }

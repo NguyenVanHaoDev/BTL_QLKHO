@@ -1,5 +1,6 @@
 using System;
 using System.Data.Entity;
+using System.Linq;
 using QLKHO.DAL.Models;
 
 namespace QLKHO.DAL.Repositories
@@ -146,16 +147,82 @@ namespace QLKHO.DAL.Repositories
         // Context property
         public QuanLyKhoDbContext Context => _context;
 
-        // Save changes
+        // Save changes with proper error handling
         public int SaveChanges()
         {
-            return _context.SaveChanges();
+            try
+            {
+                return _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                // Rollback any pending changes
+                Rollback();
+                throw;
+            }
+        }
+
+        // Rollback changes
+        public void Rollback()
+        {
+            var changedEntries = _context.ChangeTracker.Entries()
+                .Where(e => e.State != EntityState.Unchanged)
+                .ToList();
+
+            foreach (var entry in changedEntries)
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Modified:
+                        entry.CurrentValues.SetValues(entry.OriginalValues);
+                        entry.State = EntityState.Unchanged;
+                        break;
+                    case EntityState.Added:
+                        entry.State = EntityState.Detached;
+                        break;
+                    case EntityState.Deleted:
+                        entry.State = EntityState.Unchanged;
+                        break;
+                }
+            }
         }
 
         // Begin transaction
         public DbContextTransaction BeginTransaction()
         {
             return _context.Database.BeginTransaction();
+        }
+
+        // Check and reset connection if needed
+        public void EnsureConnection()
+        {
+            try
+            {
+                // Test connection
+                _context.Database.Connection.Open();
+                _context.Database.Connection.Close();
+            }
+            catch
+            {
+                // If connection is broken, dispose and create new context
+                _context.Dispose();
+                // Note: This will require recreating the UnitOfWork
+                throw new InvalidOperationException("Database connection is broken. Please recreate the UnitOfWork.");
+            }
+        }
+
+        // Check if context is in a valid state
+        public bool IsContextValid()
+        {
+            try
+            {
+                return _context.Database.Connection.State == System.Data.ConnectionState.Closed ||
+                       _context.Database.Connection.State == System.Data.ConnectionState.Open;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         // Dispose
